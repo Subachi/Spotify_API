@@ -4,10 +4,12 @@ import base64
 from requests import post, get
 import json
 
-load_dotenv("")
+load_dotenv("D:\GONZAGA\Fall 2023\Personal Projects\Spotify\.env")
 
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
+
+# Gets authentication token to acccess API
 
 
 def get_token():
@@ -26,9 +28,13 @@ def get_token():
     token = json_result["access_token"]
     return token
 
+# Gets authentication header for JSON request
+
 
 def get_auth_header(token):
     return {"Authorization": "Bearer " + token}
+
+# Returns items object
 
 
 def search_for_artist(token, artist_name):
@@ -38,9 +44,32 @@ def search_for_artist(token, artist_name):
 
     query_url = url + query
     result = get(query_url, headers=headers)
-    json_result = json.loads(result.content)
-    print(json_result)
+    json_result = json.loads(result.content)[
+        "artists"]["items"]
+    if len(json_result) == 0:
+        print("No artists with this name exists...")
+        return None
+    return json_result[0]
+
+# Returns base62 encoded artist ID
 
 
+def get_artist_id(token, artist_name):
+    url = search_for_artist(token, artist_name)["external_urls"]["spotify"]
+    substr = url.split("/")
+    end_point = len(substr)-1
+    return substr[end_point]
+
+
+'''
+#Song reccomendation
+def request_rec(token, seed_genres):
+    url = "https://api.spotify.com/v1/recommendations"
+    headers = get_auth_header(token)
+    query = f""
+    pass
+'''
+
+artist = input("Enter name: ")
 token = get_token()
-search_for_artist(token, "Olivia Rodrigo")
+print("Artist id: %s" % (get_artist_id(token, artist)))
