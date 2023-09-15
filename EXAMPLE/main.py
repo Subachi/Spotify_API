@@ -4,7 +4,7 @@ import base64
 from requests import post, get
 import json
 
-load_dotenv("D:\GONZAGA\Fall 2023\Personal Projects\Spotify\.env")
+load_dotenv("")
 
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
